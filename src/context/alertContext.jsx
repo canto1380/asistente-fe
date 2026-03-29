@@ -1,0 +1,31 @@
+import { createContext, useContext, useState, useCallback } from 'react';
+import Alert from '../components/Alert/Alert.jsx';
+
+const AlertContext = createContext();
+
+export const AlertProvider = ({ children }) => {
+  const [alert, setAlert] = useState(null);
+
+  const showAlert = useCallback((message, type = 'success') => {
+    setAlert({ message, type });
+  }, []);
+
+  const closeAlert = useCallback(() => {
+    setAlert(null);
+  }, []);
+
+  return (
+    <AlertContext.Provider value={{ showAlert }}>
+      {children}
+      {alert && (
+        <Alert
+          message={alert.message}
+          type={alert.type}
+          onClose={closeAlert}
+        />
+      )}
+    </AlertContext.Provider>
+  );
+};
+
+export const useAlert = () => useContext(AlertContext);

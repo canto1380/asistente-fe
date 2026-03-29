@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+/* 
+  PLANILLA DE DISEÑO (THEME)
+  Aquí definimos las variables globales reutilizables.
+  En lugar de usar colores fijos (blue-500), usamos nombres semánticos (primary, surface).
+*/
+@theme {
+  /* -- Tipografía Fina y Adaptable -- */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  /* -- Paleta de Colores Semántica -- */
+  
+  /* 1. Primary Scale (Celeste Opaco - Tu marca) */
+  --color-primary-50: #f0f7fa;
+  --color-primary-100: #e1eff6;
+  --color-primary-200: #bce0ee;
+  --color-primary-300: #86c6e3;
+  --color-primary-400: #5baed6;
+  --color-primary-500: #4a8db7; /* Tu color base original */
+  --color-primary-600: #36698a;
+  --color-primary-700: #2c5470;
+  --color-primary-800: #26465c;
+  --color-primary-900: #223b4d;
+  --color-primary-950: #162633;
+
+  /* 2. Secondary Scale (Slate - Azul grisáceo para UI, bordes y fondos) */
+  --color-secondary-50: #f8fafc;
+  --color-secondary-100: #f1f5f9;
+  --color-secondary-200: #e2e8f0;
+  --color-secondary-300: #cbd5e1;
+  --color-secondary-400: #94a3b8;
+  --color-secondary-500: #64748b;
+  --color-secondary-600: #475569;
+  --color-secondary-700: #334155;
+  --color-secondary-800: #1e293b;
+  --color-secondary-900: #0f172a;
+
+  /* 3. Neutral Scale (Grises puros) */
+  --color-neutral-50: #f9fafb;
+  --color-neutral-100: #f3f4f6;
+  --color-neutral-200: #e5e7eb;
+  --color-neutral-300: #d1d5db;
+  --color-neutral-400: #9ca3af;
+  --color-neutral-500: #6b7280;
+  --color-neutral-600: #4b5563;
+  --color-neutral-700: #374151;
+  --color-neutral-800: #1f2937;
+  --color-neutral-900: #000000;
+
+  /* -- Mappings Semánticos (Alias para uso rápido) -- */
+  --color-primary: var(--color-primary-500);
+  --color-primary-foreground: #ffffff;
+  --color-primary-hover: var(--color-primary-600);
+
+  /* Color de Fondo y Superficies (Modo Claro por defecto) */
+  --color-background: var(--color-secondary-100);
+  --color-surface: #ffffff;    /* Blanco puro para tarjetas */
+  --color-surface-border: var(--color-secondary-200);
+
+  /* Textos */
+  --color-text-title: var(--color-neutral-900);
+  --color-text-body: var(--color-secondary-700);
+  --color-text-muted: var(--color-secondary-500);
+
+  /* Estados */
+  --color-success: #10b981;
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
+}
+
+/* 
+  Configuración Base 
+  Aplicamos la fuente y el color de fondo a toda la app
+*/
+:root {
+  font-family: var(--font-sans);
+  background-color: var(--color-background);
+  color: var(--color-text-body);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
