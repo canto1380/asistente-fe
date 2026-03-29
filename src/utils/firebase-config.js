@@ -2,14 +2,23 @@
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
+const APIKEY = import.meta.env.VITE_FIREBASE_APIKEY
+const AUTHDOMAIN = import.meta.env.VITE_FIREBASE_AUTHDOMAIN
+const PROJECTID = import.meta.env.VITE_FIREBASE_PROJECTID
+const STORAGEBUCKET = import.meta.env.VITE_FIREBASE_STORAGEBUCKET
+const MESSAGINGSENDERID = import.meta.env.VITE_FIREBASE_MESSAGINGSENDERID
+const APPID = import.meta.env.VITE_FIREBASE_APPID
+const MEASUREMENTID = import.meta.env.VITE_FIREBASE_MEASUREMENTID
+
+
 const firebaseConfig = {
-  apiKey: "AIzaSyD_3T7mE6Z_TCSNIjhJlC1GepFN_9u8ClM",
-  authDomain: "asistente-nest.firebaseapp.com",
-  projectId: "asistente-nest",
-  storageBucket: "asistente-nest.firebasestorage.app",
-  messagingSenderId: "149732653457",
-  appId: "1:149732653457:web:7c53989e9ac1a1b59d4230",
-  measurementId: "G-1Z1MCHVDS3"
+  apiKey: APIKEY,
+  authDomain: AUTHDOMAIN,
+  projectId: PROJECTID,
+  storageBucket: STORAGEBUCKET,
+  messagingSenderId: MESSAGINGSENDERID,
+  appId: APPID,
+  measurementId: MEASUREMENTID
 };
 
 const app = initializeApp(firebaseConfig);
