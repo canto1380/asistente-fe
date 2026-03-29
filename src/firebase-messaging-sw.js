@@ -2,6 +2,14 @@
 // src/firebase-messaging-sw.js
 import { initializeApp } from 'firebase/app';
 import { getMessaging, onBackgroundMessage } from 'firebase/messaging/sw';
+import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching';
+
+// Limpia las cachés de versiones anteriores de la PWA
+cleanupOutdatedCaches();
+
+// Pre-cachea los archivos generados por el build (JS, CSS, HTML)
+// eslint-disable-next-line no-restricted-globals
+precacheAndRoute(self.__WB_MANIFEST);
 
 // Ahora Vite inyectará estas variables automáticamente durante el build
 const firebaseConfig = {

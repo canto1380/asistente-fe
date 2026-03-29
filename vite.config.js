@@ -15,7 +15,6 @@ export default defineConfig({
       registerType: 'autoUpdate',
       injectManifest: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
-        cleanupOutdatedCaches: true,
         // injectionPoint: 'self.__WB_MANIFEST', // Valor por defecto que busca Workbox
       },
       manifest: {
