@@ -61,7 +61,6 @@ const GastosPage = () => {
             if (categoriaSelected) {
                 url += `&categoriaGasto=${categoriaSelected}`;
             }
-            console.log(url)
             const { data } = await getRequest(url);
             setReporte(data);
         } catch (error) {
