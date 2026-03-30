@@ -97,7 +97,7 @@ const TareasTable = ({ tareas, onEdit, onDelete, onToggleStatus, bandListaTareas
                                         {!bandListaTareas && (
                                             <td className="p-3">
                                                 {tarea.fechaVencimiento ? (
-                                                    <span className={`flex items-center gap-1 font-medium ${status.color}`}><Calendar className="w-3 h-3" /> {formatDate(tarea.fechaVencimiento)}</span>
+                                                    <span className={`flex items-center gap-1 font-medium ${status?.color}`}><Calendar className="w-3 h-3" /> {formatDate(tarea.fechaVencimiento)}</span>
                                                 ) : '-'}
                                             </td>
                                         )}
