@@ -193,9 +193,8 @@ const GastosPage = () => {
                             >
                                 <ResumenGastos
                                     total={reporte.total}
-                                    mes={displayMonth + 1} // Pasa el mes 1-indexado
-                                    anio={new Date(desde).getFullYear()}
-                                    btnIrPanel={false}
+                                    mes={mes} // Pasa el mes 1-indexado
+                                    anio={anio}
                                 />
                                 <div className="flex justify-center pb-2 text-gray-400">
                                     {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
@@ -208,7 +207,7 @@ const GastosPage = () => {
                                         <h3 className="text-sm font-bold text-gray-700 uppercase tracking-tight">
                                             Desglose de Gastos - {meses[displayMonth]}
                                         </h3>
-                                        <span className="text-[10px] bg-primary-100 text-primary-700 px-2 py-0.5 rounded-full font-bold">
+                                        <span>
                                             {filteredGastos.length} REGISTROS
                                         </span>
                                     </div>

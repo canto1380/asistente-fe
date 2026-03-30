@@ -38,8 +38,6 @@ export const getDateStatus = (dateString) => {
     if (diffDays < -1) return { text: 'Vencida', color: 'text-red-600', bg: 'bg-red-50 border-red-200' };
     if (diffDays === -1) return { text: 'Vence hoy', color: 'text-orange-600', bg: 'bg-orange-50 border-orange-200' };
     if (diffDays === 0) return { text: 'Vence manana', color: 'text-yellow-600', bg: 'bg-yellow-50 border-yellow-200' };
-    if (diffDays <= 3) return { text: 'Vence pronto', color: 'text-yellow-600', bg: 'bg-yellow-50 border-yellow-200' };
-    return { text: 'En fecha', color: 'text-green-600', bg: 'bg-green-50 border-green-200' };
 };
 
 export const getRelativeTime = (dateString) => {

@@ -2,13 +2,13 @@
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
-const APIKEY = import.meta.env.VITE_FIREBASE_APIKEY
-const AUTHDOMAIN = import.meta.env.VITE_FIREBASE_AUTHDOMAIN
-const PROJECTID = import.meta.env.VITE_FIREBASE_PROJECTID
-const STORAGEBUCKET = import.meta.env.VITE_FIREBASE_STORAGEBUCKET
-const MESSAGINGSENDERID = import.meta.env.VITE_FIREBASE_MESSAGINGSENDERID
-const APPID = import.meta.env.VITE_FIREBASE_APPID
-const MEASUREMENTID = import.meta.env.VITE_FIREBASE_MEASUREMENTID
+const APIKEY = import.meta.env.VITE_FIREBASE_API_KEY
+const AUTHDOMAIN = import.meta.env.VITE_FIREBASE_AUTH_DOMAIN
+const PROJECTID = import.meta.env.VITE_FIREBASE_PROJECT_ID
+const STORAGEBUCKET = import.meta.env.VITE_FIREBASE_STORAGE_BUCKET
+const MESSAGINGSENDERID = import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID
+const APPID = import.meta.env.VITE_FIREBASE_APP_ID
+const MEASUREMENTID = import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 
 
 const firebaseConfig = {
@@ -21,6 +21,11 @@ const firebaseConfig = {
   measurementId: MEASUREMENTID
 };
 
+// Validación defensiva para desarrollo
+if (!firebaseConfig.projectId) {
+    console.error("❌ Firebase Error: VITE_FIREBASE_PROJECTID no está definido en el archivo .env o el servidor necesita un reinicio.");
+}
+
 const app = initializeApp(firebaseConfig);
 export const messaging = getMessaging(app);
 
@@ -28,8 +33,7 @@ export const messaging = getMessaging(app);
 export const requestForToken = async () => {
   try {
     const currentToken = await getToken(messaging, {
-      // REEMPLAZA ESTO con la clave que generaste en la pestaña "Cloud Messaging" -> "Web configuration"
-      vapidKey: 'BJ4kLozjDI5leRwIibWzu_q07XicRlYZ6IdjRen8QTzJHDnCCkVvNnJL0IHBcTv45VNViF4GbWW0HLwO0bKcgXY' 
+      vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY 
     });
     
     if (currentToken) {
