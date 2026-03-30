@@ -28,6 +28,8 @@ const ListaTareasItem = ({ lista, tareas, onEditList, onDeleteList, onEditTarea,
     const vencimientoDisplay = formatDate(vencimientoIso);
     const status = getDateStatus(vencimientoIso);
 
+    console.log(status)
+
     return (
         <div className="border border-gray-200 rounded-lg mb-4 overflow-hidden shadow-sm bg-white transition-all hover:shadow-md">
             {/* Encabezado de la Lista (Clickeable para expandir) */}
@@ -42,10 +44,10 @@ const ListaTareasItem = ({ lista, tareas, onEditList, onDeleteList, onEditTarea,
                             <span className="bg-white border border-gray-200 px-2 py-0.5 rounded-full">{tareas.length} tareas</span>
                             <span className="uppercase tracking-wider">{lista.tipoPeriodo}</span>
                             {vencimientoIso && (
-                                <span className={`flex items-center gap-2 border px-2 py-0.5 rounded-full ${status.bg} ${status.color}`}>
+                                <span className={`flex items-center gap-2 border px-2 py-0.5 rounded-full ${status?.bg} ${status?.color}`}>
                                     <Calendar className="w-3 h-3" />
                                     <span className="font-medium">{vencimientoDisplay}</span>
-                                    <span className="border-l border-current pl-2 opacity-80 font-bold text-[10px] uppercase">{status.text}</span>
+                                    <span className="border-l border-current pl-2 opacity-80 font-bold text-[10px] uppercase">{status?.text}</span>
                                 </span>
                             )}
                         </div>

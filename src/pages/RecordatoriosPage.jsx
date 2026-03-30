@@ -75,18 +75,18 @@ const RecordatoriosPage = () => {
             <PageHeader title="Recordatorios" />
 
             <FilterBar search={search} handleSearch={(e) => setSearch(e.target.value)}>
-                <select value={estadoFilter} onChange={(e) => setEstadoFilter(e.target.value)} className="px-3 py-2 rounded-xl border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-primary-500">
+                <select value={estadoFilter} onChange={(e) => setEstadoFilter(e.target.value)} className="w-full md:w-40 px-3 py-2 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-primary-500 outline-none">
                     <option value="">Todos los estados</option>
                     <option value="PENDIENTE">Pendientes</option>
                     <option value="ENVIADO">Enviados</option>
                 </select>
-                <select value={tipoFilter} onChange={(e) => setTipoFilter(e.target.value)} className="px-3 py-2 rounded-xl border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-primary-500">
+                <select value={tipoFilter} onChange={(e) => setTipoFilter(e.target.value)} className="w-full md:w-40 px-3 py-2 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-primary-500 outline-none">
                     <option value="">Todos los tipos</option>
                     <option value="EVENTO">Eventos</option>
                     <option value="TAREA">Tareas Independientes</option>
                     <option value="LISTA">Listas de Tareas</option>
                 </select>
-                <input type="date" value={fechaFilter} onChange={(e) => setFechaFilter(e.target.value)} className="px-3 py-2 rounded-xl border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-primary-500" />
+                <input type="date" value={fechaFilter} onChange={(e) => setFechaFilter(e.target.value)} className="w-full md:w-40 px-3 py-2 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-primary-500 outline-none" />
             </FilterBar>
 
             {loading ? (

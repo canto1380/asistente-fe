@@ -1,6 +1,6 @@
 const PageHeader = ({ title, subtitle, children }) => {
     return (
-        <div className="flex flex-wrap items-center justify-between gap-y-2 mb-4 pt-4">
+        <div className="flex flex-wrap items-center justify-between gap-y-2 mb-0 pt-0 md:mb-4 md:pt-4 ">
             <div className="flex items-center gap-4">
                 <h1 className="text-xl font-bold text-gray-800">{title}</h1>
             </div>
