@@ -1,6 +1,7 @@
 import { AlertTriangle } from 'lucide-react';
 
 const ComponentModalEliminar = ({ onSubmit, data, onCancel, type }) => {
+    console.log(data)
     const handleSubmit = () => {
         onSubmit(data.id);
     };
@@ -15,7 +16,7 @@ const ComponentModalEliminar = ({ onSubmit, data, onCancel, type }) => {
             
             <p className="text-gray-500 text-sm mb-8 leading-relaxed">
                 Estás a punto de eliminar el/la {type}: <br />
-                <span className="font-semibold text-gray-800 text-base italic">"{data?.titulo}"</span>.
+                <span className="font-semibold text-gray-800 text-base italic">"{data?.titulo || data?.nombre}"</span>.
                 <br />Esta acción no se puede deshacer y borrará los gastos asociados.
             </p>
 

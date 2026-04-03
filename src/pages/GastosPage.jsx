@@ -163,22 +163,6 @@ const GastosPage = () => {
                             className="w-full md:w-28 px-3 py-2 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-primary-500 outline-none"
                             placeholder="Año"
                         />
-                        {/* <div className="flex flex-col md:flex-row gap-2 items-center">
-                    <span className="text-xs text-gray-500 font-bold">DESDE</span>
-                    <input 
-                        type="date" 
-                        value={desde} 
-                        onChange={(e) => setDesde(e.target.value)}
-                        className="w-full md:w-40 px-3 py-2 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-primary-500 outline-none"
-                    />
-                    <span className="text-xs text-gray-500 font-bold">HASTA</span>
-                    <input 
-                        type="date" 
-                        value={hasta} 
-                        onChange={(e) => setHasta(e.target.value)}
-                        className="w-full md:w-40 px-3 py-2 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-primary-500 outline-none"
-                    />
-                </div> */}
                     </FilterBar>
                     <div className="space-y-4">
                         {/* Resumen Colapsable */}

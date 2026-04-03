@@ -10,6 +10,7 @@ import TareasPage from '../pages/TareasPage.jsx'
 import GastosPage from '../pages/GastosPage.jsx'
 import MainLayout from '../Components/Navbar/MainLayout.jsx'
 import RecordatoriosPage from '../pages/RecordatoriosPage.jsx'
+import CategoriasGastoPage from '../pages/CategoriasGastoPage.jsx'
 
 export const AppRouter = () => {
     const estaConectado = navigator.isOnline
@@ -38,6 +39,9 @@ export const AppRouter = () => {
                         
                         <Route element={<PrivateRoutes requiredRole={['ADMIN', 'ADMINEMPRESA']} />}>
                             <Route path='/gastos' element={<GastosPage />} />
+                        </Route>
+                        <Route element={<PrivateRoutes requiredRole={['ADMIN', 'ADMINEMPRESA']} />}>
+                            <Route path='/categorias-gasto' element={<CategoriasGastoPage />} />
                         </Route>
 
 
