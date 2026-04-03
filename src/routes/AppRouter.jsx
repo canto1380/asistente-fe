@@ -12,6 +12,7 @@ import MainLayout from '../Components/Navbar/MainLayout.jsx'
 import RecordatoriosPage from '../pages/RecordatoriosPage.jsx'
 import CategoriasGastoPage from '../pages/CategoriasGastoPage.jsx'
 import RolesPermisosPage from '../pages/RolesPermisosPage.jsx'
+import UsuariosPage from '../pages/UsersPage.jsx'
 
 export const AppRouter = () => {
     const estaConectado = navigator.isOnline
@@ -47,6 +48,9 @@ export const AppRouter = () => {
 
                         <Route element={<PrivateRoutes requiredRole={['ADMIN', 'ADMINEMPRESA']} />}>
                             <Route path='/roles-permisos' element={<RolesPermisosPage />} />
+                        </Route>
+                        <Route element={<PrivateRoutes requiredRole={['ADMIN', 'ADMINEMPRESA']} />}>
+                            <Route path='/usuarios' element={<UsuariosPage />} />
                         </Route>
 
 

@@ -1,4 +1,4 @@
-import { BellRing, Calendar, CircleDollarSign, ClipboardCheck, House, Folder, Shield } from "lucide-react";
+import { BellRing, Calendar, CircleDollarSign, ClipboardCheck, House, Folder, Shield, Users } from "lucide-react";
 
 export const MENU_ITEMS = [
     {
@@ -43,6 +43,11 @@ export const MENU_ITEMS = [
         allowedRoles: ['ADMIN', 'ADMINEMPRESA'],
         icon: (<Shield className="w-5 h-5"/>)
     },
-
+    {
+        label: 'Usuarios',
+        path: '/usuarios',
+        allowedRoles: ['ADMIN', 'ADMINEMPRESA'],
+        icon: (<Users className="w-5 h-5"/>)
+    },
 
 ]

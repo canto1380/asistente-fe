@@ -17,9 +17,7 @@ const PermissionTable = ({ permisos, onEdit, onDelete, onView }) => {
                         <tr key={p.id} className="hover:bg-gray-50/50 transition-colors">
                             <td className="p-4">
                                 <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-indigo-50 rounded-lg">
-                                        <Key className="w-4 h-4 text-indigo-600" />
-                                    </div>
+                                    <Key className="w-4 h-4 hidden md:block text-indigo-600" />
                                     <span className="font-medium text-gray-900">{p.codigo}</span>
                                 </div>
                             </td>
