@@ -16,7 +16,7 @@ const ComponentModalEliminar = ({ onSubmit, data, onCancel, type }) => {
             
             <p className="text-gray-500 text-sm mb-8 leading-relaxed">
                 Estás a punto de eliminar el/la {type}: <br />
-                <span className="font-semibold text-gray-800 text-base italic">"{data?.titulo || data?.nombre}"</span>.
+                <span className="font-semibold text-gray-800 text-base italic">"{data?.titulo || data?.nombre || data?.codigo}"</span>.
                 <br />Esta acción no se puede deshacer y borrará los gastos asociados.
             </p>
 
