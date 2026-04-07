@@ -3,6 +3,10 @@ import { createContext, useContext, useState, useEffect } from "react";
 import api from "../api/axios";
 import { jwtDecode } from "jwt-decode";
 import ModalMessage from "../Components/ModalMessage/Modal";
+import {
+  syncAccessTokenForServiceWorker,
+  clearAccessTokenForServiceWorker,
+} from "../utils/swAuthStorage";
 
 const AuthContext = createContext()
 
@@ -35,6 +39,14 @@ export const AuthProvider = ({ children }) => {
     const [error, setError] = useState(null)
     const [sessionExpired, setSessionExpired] = useState(false); // Estado para mostrar el modal
 
+    // Token en IndexedDB para el service worker (notificaciones en background)
+    useEffect(() => {
+        const t = localStorage.getItem('token');
+        if (t) {
+            syncAccessTokenForServiceWorker(t).catch(() => {});
+        }
+    }, []);
+
     // Función de Login
     const login = async (email, password) => {
         try {
@@ -50,6 +62,7 @@ export const AuthProvider = ({ children }) => {
 
             localStorage.setItem('token', access_token);
             localStorage.setItem('refreshToken', refresh_token); // Guardamos el refresh token
+            syncAccessTokenForServiceWorker(access_token).catch(() => {});
             setUser({
                 token: access_token,
                 id: decoded.sub,
@@ -68,6 +81,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('refreshToken');
+        clearAccessTokenForServiceWorker().catch(() => {});
         setUser(null);
         setSessionExpired(false);
     };
@@ -102,6 +116,7 @@ export const AuthProvider = ({ children }) => {
 
                         // Guardamos el nuevo token
                         localStorage.setItem('token', data.access_token);
+                        syncAccessTokenForServiceWorker(data.access_token).catch(() => {});
 
                         // Actualizamos el usuario en el estado (opcional, para mantener sync)
                         const decoded = jwtDecode(data.access_token);

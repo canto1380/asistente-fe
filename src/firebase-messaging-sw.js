@@ -3,6 +3,7 @@
 import { initializeApp } from 'firebase/app';
 import { getMessaging, onBackgroundMessage } from 'firebase/messaging/sw';
 import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching';
+import { getAccessTokenForServiceWorker } from './utils/swAuthStorage';
 
 // Limpia las cachés de versiones anteriores de la PWA
 cleanupOutdatedCaches();
@@ -46,27 +47,53 @@ onBackgroundMessage(messaging, (payload) => {
     return self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
+function apiBaseUrl() {
+    const base = import.meta.env.VITE_API_URL || '';
+    return base.replace(/\/$/, '');
+}
+
+async function patchRecordatorioDesdeNotificacion(recordatorioId, accion) {
+    const token = await getAccessTokenForServiceWorker();
+    const base = apiBaseUrl();
+    if (!token) {
+        console.warn(
+            '[SW] No hay JWT en IndexedDB; inicia sesión en la app para usar Posponer/Listo desde la notificación.',
+        );
+        const ventanas = await self.clients.matchAll({
+            type: 'window',
+            includeUncontrolled: true,
+        });
+        if (ventanas.length > 0) {
+            return ventanas[0].focus();
+        }
+        return self.clients.openWindow('/');
+    }
+    const url = `${base}/recordatorios/${recordatorioId}/${accion}`;
+    const res = await fetch(url, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
+        body: '{}',
+    });
+    if (!res.ok) {
+        const text = await res.text().catch(() => '');
+        console.error('[SW] Error al ejecutar acción de notificación:', res.status, text);
+    }
+}
+
 // Manejo de clics en las acciones de la notificación
 self.addEventListener('notificationclick', (event) => {
     event.notification.close();
-    const recordatorioId = event.notification.data?.recordatorioId;
-    
-    // Intentar obtener el token desde el cliente o almacenamiento persistente
-    // Para entornos profesionales, el token se guarda en IndexedDB durante el login
-    
+    const data = event.notification.data || {};
+    const recordatorioId = data.recordatorioId;
+
     if (event.action === 'snooze' && recordatorioId) {
-        const promise = fetch(`${import.meta.env.VITE_API_URL}/recordatorios/${recordatorioId}/posponer`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' }
-        });
-        event.waitUntil(promise);
+        event.waitUntil(patchRecordatorioDesdeNotificacion(recordatorioId, 'posponer'));
     } else if (event.action === 'done' && recordatorioId) {
-        const promise = fetch(`${import.meta.env.VITE_API_URL}/recordatorios/${recordatorioId}/realizado`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' }
-        });
-        event.waitUntil(promise);
+        event.waitUntil(patchRecordatorioDesdeNotificacion(recordatorioId, 'realizado'));
     } else {
-        event.waitUntil(clients.openWindow('/'));
+        event.waitUntil(self.clients.openWindow('/'));
     }
 });
