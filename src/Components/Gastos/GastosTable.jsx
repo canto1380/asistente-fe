@@ -1,7 +1,10 @@
-import { Eye, ExternalLink, Calendar, Tag, Clock, CheckCircle2, XCircle, HelpCircle } from 'lucide-react';
+import { Eye, ExternalLink, Calendar, Tag, Clock, CheckCircle2, XCircle, HelpCircle, ArrowUpDown } from 'lucide-react';
 import { formatDate } from '../../utils/dateFormatter';
+import { useState } from 'react';
 
 const GastosTable = ({ gastos, onViewDetail, onNavigateToSource }) => {
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+
     const getOrigenLabel = (gasto) => {
         if (gasto.evento) return { label: 'Evento', color: 'bg-blue-100 text-blue-700', title: gasto.evento.titulo };
         if (gasto.tarea) return { label: 'Tarea', color: 'bg-purple-100 text-purple-700', title: gasto.tarea.titulo };
@@ -48,29 +51,96 @@ const GastosTable = ({ gastos, onViewDetail, onNavigateToSource }) => {
             </span>
         );
     };
+
+    // --- Logica de ordenamiento --- //
+    const sortedGastos = [...gastos].sort((a, b) => {
+        if (!sortConfig.key) return 0;
+
+        let aValue, bValue;
+
+        // Obtener valores para columnas calculadas o anidadas
+        if (sortConfig.key === 'titulo') {
+            aValue = getInfo(a).titulo.toLowerCase();
+            bValue = getInfo(b).titulo.toLowerCase();
+        } else if (sortConfig.key === 'tipo') {
+            aValue = getInfo(a).tipo;
+            bValue = getInfo(b).tipo;
+        } else {
+            aValue = a[sortConfig.key];
+            bValue = b[sortConfig.key];
+        }
+
+        // Manejo especial para fechas
+        if (sortConfig.key === 'activador') {
+            aValue = new Date(aValue || 0).getTime();
+            bValue = new Date(bValue || 0).getTime();
+        }
+
+        if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+        if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+        return 0;
+    });
+    const requestSort = (key) => {
+        let direction = 'asc';
+        console.log('sort:', sortConfig)
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            console.log('entra: ', sortConfig.key)
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
+    }; 
+
+    console.log(sortedGastos)
+
     return (
         <div className="overflow-x-auto bg-white rounded-xl border border-gray-200 shadow-sm">
             <table className="w-full text-left border-collapse">
                 <thead>
-                    <tr className="bg-gray-50 border-b border-gray-200 text-[10px] uppercase text-gray-500 font-bold">
-                        <th className="p-4">Fecha</th>
-                        <th className="p-4">Descripción / Origen</th>
-                        <th className="p-4">Categoría</th>
-                        <th className="p-4">Estado</th>
-                        <th className="p-4 text-right">Monto</th>
+
+                    <tr className="bg-gray-50 border-b border-gray-200 text-xs uppercase text-gray-500 font-semibold">
+                        <th className="py-2 px-1 md:p-4 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => requestSort('fecha')}>
+                            <div className="flex items-center gap-1">
+                                Fecha
+                                <ArrowUpDown className={`w-3 h-3 ${sortConfig.key === 'fecha' ? 'text-primary-600' : 'text-gray-400'}`} />
+                            </div>
+                        </th>
+                        <th className="py-2 px-1 md:p-4 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => requestSort('descripcion')}>
+                            <div className="flex items-center gap-1">
+                                Descripción
+                                <ArrowUpDown className={`w-3 h-3 ${sortConfig.key === 'descripcion' ? 'text-primary-600' : 'text-gray-400'}`} />
+                            </div>
+                        </th>
+                        <th className="py-2 px-1 md:p-4 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => requestSort('categoria')}>
+                            <div className="flex items-center gap-1">
+                                Categoría
+                                <ArrowUpDown className={`w-3 h-3 ${sortConfig.key === 'categoria' ? 'text-primary-600' : 'text-gray-400'}`} />
+                            </div>
+                        </th>
+                        <th className="py-2 px-1 md:p-4 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => requestSort('estado')}>
+                            <div className="flex items-center gap-1">
+                                Estado
+                                <ArrowUpDown className={`w-3 h-3 ${sortConfig.key === 'estado' ? 'text-primary-600' : 'text-gray-400'}`} />
+                            </div>
+                        </th>
+                        <th className="py-2 px-1 md:p-4 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => requestSort('monto')}>
+                            <div className="flex items-center gap-1">
+                                Monto
+                                <ArrowUpDown className={`w-3 h-3 ${sortConfig.key === 'monto' ? 'text-primary-600' : 'text-gray-400'}`} />
+                            </div>
+                        </th>
                         <th className="p-4 text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody className="text-sm divide-y divide-gray-100">
-                    {gastos.length > 0 ? (
-                        gastos.map((gasto) => {
+                    {sortedGastos.length > 0 ? (
+                        sortedGastos.map((gasto) => {
                             const origen = getOrigenLabel(gasto);
                             return (
                                 <tr key={gasto.id} className="hover:bg-gray-50 transition-colors">
                                     <td className="p-4 whitespace-nowrap text-gray-600">
                                         <div className="flex items-center gap-2">
-                                            <Calendar className="w-4 h-4 text-gray-400" />
-                                            {formatDate(gasto.fecha)}
+                                            <Calendar className="w-4 h-4 text-gray-400 hidden md:block" />
+                                            {formatDate(gasto?.evento?.inicio || gasto?.tarea?.fechaVencimiento || gasto?.listaTarea?.fin)}
                                         </div>
                                     </td>
                                     <td className="p-4">
@@ -83,7 +153,7 @@ const GastosTable = ({ gastos, onViewDetail, onNavigateToSource }) => {
                                     </td>
                                     <td className="p-4">
                                         <span className="flex items-center gap-1.5 text-gray-600">
-                                            <Tag className="w-3.5 h-3.5 text-primary-400" />
+                                            <Tag className="w-3.5 h-3.5 text-primary-400 hidden md:block" />
                                             {gasto.categoriaGasto?.nombre}
                                         </span>
                                     </td>

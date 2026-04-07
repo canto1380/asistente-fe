@@ -1,22 +1,55 @@
-import React from 'react';
-import { Edit, Trash2, User, Shield, Mail } from 'lucide-react';
+import React, { useState } from 'react';
+import { Edit, Trash2, User, Shield, Mail, ArrowUpDown } from 'lucide-react';
 
 const UserTable = ({ users, onEdit, onDelete, onAssignRole }) => {
-    console.log(users)
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' })
+
+    // -- Logica de ordenamiento -- //
+    const sortedUsuarios = [...users].sort((a, b) => {
+        if (!sortConfig.key) return 0
+
+        let aValue = a[sortConfig.key]
+        let bValue = b[sortConfig.key]
+
+        // -- Manejo especial para fechas -- //
+        if (sortConfig.key === 'fechaVencimiento') {
+            aValue = new Date(aValue || 0).getTime()
+            bValue = new Date(bValue || 0).getTime()
+        }
+
+        if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1
+        if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1
+        return 0
+    })
+
+    const requestSort = (key) => {
+        let direction = 'asc';
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
+    };
+
     return (
         <div className="overflow-x-auto bg-white rounded-xl shadow-sm border border-gray-100 mt-2">
             <table className="w-full text-left border-collapse table-auto">
                 <thead>
-                    <tr className="bg-gray-50 border-b border-gray-100 text-xs uppercase text-gray-500 font-semibold">
-                        <th className="p-4">Usuario</th>
-                        <th className="p-4">Email</th>
-                        <th className="p-4">Rol</th>
+                    <tr className="bg-gray-50 border-b border-gray-200 text-xs uppercase text-gray-500 font-semibold">
+                        <th className="p-3 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => requestSort('nombre')}>
+                            <div className="flex items-center gap-1">Usuario <ArrowUpDown className="w-3 h-3 text-gray-400" /></div>
+                        </th>
+                        <th className="p-3 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => requestSort('email')}>
+                            <div className="flex items-center gap-1">Email <ArrowUpDown className="w-3 h-3 text-gray-400" /></div>
+                        </th>
+                        <th className="p-3 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => requestSort('role')}>
+                            <div className="flex items-center gap-1">Rol <ArrowUpDown className="w-3 h-3 text-gray-400" /></div>
+                        </th>
                         <th className="p-4 text-right">Acciones</th>
                     </tr>
                 </thead>
                 <tbody className="text-sm text-gray-700 divide-y divide-gray-50">
-                    {users.length > 0 ? (
-                        users.map((user) => (
+                    {sortedUsuarios.length > 0 ? (
+                        sortedUsuarios.map((user) => (
                             <tr key={user.id} className="hover:bg-gray-50/50 transition-colors">
                                 <td className="p-4">
                                     <div className="flex items-center gap-3">

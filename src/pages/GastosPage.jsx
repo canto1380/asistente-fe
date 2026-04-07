@@ -101,6 +101,10 @@ const GastosPage = () => {
             if (sortConfig.key === 'categoria') {
                 aValue = a.categoriaGasto?.nombre || '';
                 bValue = b.categoriaGasto?.nombre || '';
+            } else if (sortConfig.key === 'descripcion') {
+                // Ordenar por descripción o por el título del origen (evento/tarea) si no hay descripción
+                aValue = (a.descripcion || a.evento?.titulo || a.tarea?.titulo || a.listaTarea?.titulo || '').toLowerCase();
+                bValue = (b.descripcion || b.evento?.titulo || b.tarea?.titulo || b.listaTarea?.titulo || '').toLowerCase();
             } else if (sortConfig.key === 'total') {
                 aValue = Number(aValue);
                 bValue = Number(bValue);
