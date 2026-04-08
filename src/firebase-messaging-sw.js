@@ -3,7 +3,7 @@
 import { initializeApp } from 'firebase/app';
 import { getMessaging, onBackgroundMessage } from 'firebase/messaging/sw';
 import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching';
-import { getAccessTokenForServiceWorker } from './utils/swAuthStorage';
+import { getAccessTokenForServiceWorker, getRefreshTokenForServiceWorker, syncAccessTokenForServiceWorker } from './utils/swAuthStorage';
 
 // Limpia las cachés de versiones anteriores de la PWA
 cleanupOutdatedCaches();
@@ -52,9 +52,37 @@ function apiBaseUrl() {
     return base.replace(/\/$/, '');
 }
 
-async function patchRecordatorioDesdeNotificacion(recordatorioId, accion) {
-    const token = await getAccessTokenForServiceWorker();
+async function refreshAccessToken() {
+    const refreshToken = await getRefreshTokenForServiceWorker();
     const base = apiBaseUrl();
+    if (!refreshToken) return null;
+
+    try {
+        const res = await fetch(`${base}/auth/refresh`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refresh_token: refreshToken }),
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            // Misma forma que el backend (Nest): access_token / refresh_token
+            await syncAccessTokenForServiceWorker(
+                data.access_token,
+                data.refresh_token ?? refreshToken,
+            );
+            return data.access_token;
+        }
+    } catch (error) {
+        console.error('[SW] Error intentando refrescar token:', error);
+    }
+    return null;
+}
+
+async function patchRecordatorioDesdeNotificacion(recordatorioId, accion) {
+    let token = await getAccessTokenForServiceWorker();
+    const base = apiBaseUrl();
+
     if (!token) {
         console.warn(
             '[SW] No hay JWT en IndexedDB; inicia sesión en la app para usar Posponer/Listo desde la notificación.',
@@ -68,8 +96,9 @@ async function patchRecordatorioDesdeNotificacion(recordatorioId, accion) {
         }
         return self.clients.openWindow('/');
     }
+
     const url = `${base}/recordatorios/${recordatorioId}/${accion}`;
-    const res = await fetch(url, {
+    let res = await fetch(url, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
@@ -77,6 +106,23 @@ async function patchRecordatorioDesdeNotificacion(recordatorioId, accion) {
         },
         body: '{}',
     });
+
+    // Si el token expiró (401), intentamos refrescarlo una vez
+    if (res.status === 401) {
+        console.log('[SW] Token expirado, intentando refrescar...');
+        const newToken = await refreshAccessToken();
+        if (newToken) {
+            res = await fetch(url, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${newToken}`,
+                },
+                body: '{}',
+            });
+        }
+    }
+
     if (!res.ok) {
         const text = await res.text().catch(() => '');
         console.error('[SW] Error al ejecutar acción de notificación:', res.status, text);

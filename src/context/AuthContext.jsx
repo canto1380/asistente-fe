@@ -41,9 +41,10 @@ export const AuthProvider = ({ children }) => {
 
     // Token en IndexedDB para el service worker (notificaciones en background)
     useEffect(() => {
-        const t = localStorage.getItem('token');
-        if (t) {
-            syncAccessTokenForServiceWorker(t).catch(() => {});
+        const access = localStorage.getItem('token');
+        const refresh = localStorage.getItem('refreshToken');
+        if (access) {
+            syncAccessTokenForServiceWorker(access, refresh ?? undefined).catch(() => {});
         }
     }, []);
 
@@ -62,7 +63,7 @@ export const AuthProvider = ({ children }) => {
 
             localStorage.setItem('token', access_token);
             localStorage.setItem('refreshToken', refresh_token); // Guardamos el refresh token
-            syncAccessTokenForServiceWorker(access_token).catch(() => {});
+            syncAccessTokenForServiceWorker(access_token, refresh_token).catch(() => {});
             setUser({
                 token: access_token,
                 id: decoded.sub,
@@ -116,7 +117,13 @@ export const AuthProvider = ({ children }) => {
 
                         // Guardamos el nuevo token
                         localStorage.setItem('token', data.access_token);
-                        syncAccessTokenForServiceWorker(data.access_token).catch(() => {});
+                        if (data.refresh_token) {
+                            localStorage.setItem('refreshToken', data.refresh_token);
+                        }
+                        syncAccessTokenForServiceWorker(
+                            data.access_token,
+                            localStorage.getItem('refreshToken') ?? undefined,
+                        ).catch(() => {});
 
                         // Actualizamos el usuario en el estado (opcional, para mantener sync)
                         const decoded = jwtDecode(data.access_token);
